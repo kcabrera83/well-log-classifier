@@ -1,13 +1,29 @@
 # Well Log Classifier
 
-ML-based lithology classification and porosity estimation from well log data.
+ML-based lithology classification and porosity estimation from well log data using deep learning.
+
+## Tech Stack
+
+| Component | Technology |
+|-----------|-----------|
+| Deep Learning | **TensorFlow/Keras** - neural network models |
+| Data Processing | pandas, numpy, joblib |
+| Web Server | **FastAPI** + uvicorn |
+| Monitoring | prometheus-fastapi-instrumentator |
+| Validation | pydantic v2 |
+| Visualization | matplotlib, seaborn |
+
+### Key Libraries
+- TensorFlow/Keras - Deep learning for lithology classification
+- FastAPI - Modern async web framework
+- pandas / numpy - Data processing
 
 ## Overview
 
-This project provides machine learning models for analyzing well log measurements:
+This project provides deep learning models for analyzing well log measurements:
 
-- **Lithology Classifier**: Ensemble of RandomForest and GradientBoosting that classifies rock type from log curves (gamma ray, resistivity, neutron porosity, density porosity, sonic, caliper).
-- **Porosity Estimator**: GradientBoosting regressor that predicts density porosity from log features.
+- **Lithology Classifier**: TensorFlow/Keras neural network that classifies rock type from log curves (gamma ray, resistivity, neutron porosity, density porosity, sonic, caliper).
+- **Porosity Estimator**: Keras regressor that predicts density porosity from log features.
 
 ## Lithology Classes
 
@@ -99,5 +115,7 @@ well-log-classifier/
 ├── .gitignore
 └── README.md
 ```
+
+---
 
 Elaborado por Ing. Kelvin Cabrera
