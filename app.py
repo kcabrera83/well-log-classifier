@@ -127,6 +127,20 @@ def health():
     })
 
 
+@app.route("/api/docs", methods=["GET"])
+def api_docs():
+    return _json_response({
+        "openapi": "3.0.0",
+        "info": {"title": "Well Log Classifier", "version": "1.0.0"},
+        "paths": {
+            "/api/health": {"get": {"summary": "Health check"}},
+            "/api/models": {"get": {"summary": "Model info"}},
+            "/api/classify": {"post": {"summary": "Classify lithology from well log features"}},
+            "/api/porosity": {"post": {"summary": "Estimate porosity from well log features"}},
+        }
+    })
+
+
 if __name__ == "__main__":
     loaded = load_models()
     if not loaded:
