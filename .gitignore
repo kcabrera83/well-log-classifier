@@ -1,0 +1,16 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+.eggs/
+*.egg
+.env
+venv/
+.venv/
+*.pkl
+outputs/models/*.pkl
+outputs/training_results.json
+.pytest_cache/
+.coverage
+htmlcov/
