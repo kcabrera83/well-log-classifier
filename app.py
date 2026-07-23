@@ -1,4 +1,4 @@
-"""FastAPI for well log classification and porosity estimation."""
+"""FastAPI for well log classification and porosity estimation using TensorFlow/Keras."""
 
 import os
 import numpy as np
@@ -15,8 +15,8 @@ from well_log_classifier.data_generator import generate_well_log_data, LITHOLOGY
 
 app = FastAPI(
     title="Well Log Classifier",
-    description="Lithology classification and porosity estimation from well log features",
-    version="1.0.0",
+    description="Lithology classification and porosity estimation from well log features (TensorFlow/Keras)",
+    version="2.0.0",
 )
 
 app.add_middleware(
@@ -37,13 +37,16 @@ porosity_estimator = None
 @app.on_event("startup")
 async def load_models():
     global classifier, porosity_estimator
-    clf_path = os.path.join(MODELS_DIR, "lithology_classifier.pkl")
-    por_path = os.path.join(MODELS_DIR, "porosity_estimator.pkl")
-    if os.path.exists(clf_path) and os.path.exists(por_path):
-        classifier = LithologyClassifier.load(clf_path)
-        porosity_estimator = PorosityEstimator.load(por_path)
-    else:
-        print("[WARN] Models not found. Run 'python train.py' first.")
+    try:
+        clf_path = os.path.join(MODELS_DIR, "lithology_classifier.pkl")
+        por_path = os.path.join(MODELS_DIR, "porosity_estimator.pkl")
+        if os.path.exists(clf_path) and os.path.exists(por_path):
+            classifier = LithologyClassifier.load(clf_path)
+            porosity_estimator = PorosityEstimator.load(por_path)
+        else:
+            print("[WARN] Models not found. Run 'python train.py' first.")
+    except Exception as e:
+        print(f"[WARN] Error loading models: {e}")
 
 
 class ClassifyRequest(BaseModel):
@@ -68,7 +71,8 @@ async def health():
     return {
         "status": "healthy",
         "models_loaded": classifier is not None and porosity_estimator is not None,
-        "version": "1.0.0",
+        "version": "2.0.0",
+        "framework": "tensorflow/keras",
     }
 
 
@@ -77,11 +81,13 @@ async def models_info():
     return {
         "lithology_classifier": {
             "loaded": classifier is not None,
-            "type": "RandomForest + GradientBoosting (VotingClassifier)",
+            "type": "Keras Neural Network (Dense layers)",
+            "framework": "tensorflow/keras",
         },
         "porosity_estimator": {
             "loaded": porosity_estimator is not None,
-            "type": "GradientBoostingRegressor",
+            "type": "Keras Neural Network (Dense regression)",
+            "framework": "tensorflow/keras",
         },
         "features": FEATURE_COLUMNS,
         "lithology_classes": LITHOLOGY_LABELS,
@@ -129,4 +135,3 @@ async def porosity(request: PorosityRequest):
         return PorosityResponse(porosity=round(prediction, 4))
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-
