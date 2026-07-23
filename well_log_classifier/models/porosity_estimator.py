@@ -15,6 +15,7 @@ class PorosityEstimator:
     def __init__(self, random_state: int = 42):
         self.random_state = random_state
         self.model = None
+        self.scaler = None
         self._fitted = False
         self._input_dim = None
 
@@ -68,7 +69,7 @@ class PorosityEstimator:
         model_path = path.replace('.pkl', '_keras.keras')
         self.model.save(model_path)
         with open(path, "wb") as f:
-            pickle.dump({"input_dim": self._input_dim}, f)
+            pickle.dump({"input_dim": self._input_dim, "scaler": self.scaler}, f)
 
     @classmethod
     def load(cls, path: str) -> "PorosityEstimator":
@@ -77,6 +78,7 @@ class PorosityEstimator:
         with open(path, "rb") as f:
             data = pickle.load(f)
         instance._input_dim = data.get("input_dim")
+        instance.scaler = data.get("scaler")
         model_path = path.replace('.pkl', '_keras.keras')
         instance.model = keras.models.load_model(model_path)
         instance._fitted = True

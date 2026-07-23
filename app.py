@@ -105,6 +105,8 @@ async def classify(request: ClassifyRequest):
             detail=f"Expected {len(FEATURE_COLUMNS)} features: {FEATURE_COLUMNS}",
         )
     try:
+        if classifier.scaler is not None:
+            features = classifier.scaler.transform(features)
         raw_pred = classifier.predict(features)[0]
         probabilities = classifier.predict_proba(features)[0]
         classes = classifier.classes
@@ -131,6 +133,8 @@ async def porosity(request: PorosityRequest):
             detail=f"Expected {len(FEATURE_COLUMNS)} features: {FEATURE_COLUMNS}",
         )
     try:
+        if porosity_estimator.scaler is not None:
+            features = porosity_estimator.scaler.transform(features)
         prediction = float(porosity_estimator.predict(features)[0])
         return PorosityResponse(porosity=round(prediction, 4))
     except Exception as e:

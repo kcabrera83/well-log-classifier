@@ -17,6 +17,7 @@ class LithologyClassifier:
         self.random_state = random_state
         self.label_encoder = LabelEncoder()
         self.model = None
+        self.scaler = None
         self._fitted = False
         self._input_dim = None
         self._num_classes = None
@@ -78,6 +79,7 @@ class LithologyClassifier:
                 "label_encoder": self.label_encoder,
                 "input_dim": self._input_dim,
                 "num_classes": self._num_classes,
+                "scaler": self.scaler,
             }, f)
 
     @classmethod
@@ -89,6 +91,7 @@ class LithologyClassifier:
         instance.label_encoder = data.get("label_encoder", LabelEncoder())
         instance._input_dim = data.get("input_dim")
         instance._num_classes = data.get("num_classes")
+        instance.scaler = data.get("scaler")
         model_path = path.replace('.pkl', '_keras.keras')
         instance.model = keras.models.load_model(model_path)
         instance._fitted = True

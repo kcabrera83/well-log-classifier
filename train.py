@@ -32,6 +32,7 @@ def main():
     print("\n[3/5] Training lithology classifier (Keras Neural Network)...")
     classifier = LithologyClassifier(random_state=42)
     classifier.label_encoder = preprocessor.label_encoder
+    classifier.scaler = preprocessor.scaler
     train_metrics = classifier.train(X_train, y_train)
     print(f"  Training accuracy: {train_metrics['train_accuracy']}")
 
@@ -48,13 +49,14 @@ def main():
             print(f"  {cls:<15} {m['precision']:>10.4f} {m['recall']:>10.4f} {m['f1-score']:>10.4f} {m['support']:>10.0f}")
 
     print("\n[4/5] Training porosity estimator (Keras Neural Network)...")
-    y_porosity = df["density_porosity"].values
+    y_porosity = ((df["neutron_porosity"] + df["density_porosity"]) / 2).values
     from sklearn.model_selection import train_test_split
     X_p_train, X_p_test, y_p_train, y_p_test = train_test_split(
         X, y_porosity, test_size=0.2, random_state=42
     )
 
     porosity_estimator = PorosityEstimator(random_state=42)
+    porosity_estimator.scaler = preprocessor.scaler
     p_train_metrics = porosity_estimator.train(X_p_train, y_p_train)
     print(f"  Training RMSE: {p_train_metrics['train_rmse']} | R2: {p_train_metrics['train_r2']}")
 
