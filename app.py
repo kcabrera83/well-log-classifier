@@ -5,6 +5,7 @@ import numpy as np
 from typing import Dict
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from prometheus_fastapi_instrumentator import Instrumentator
 from pydantic import BaseModel
 
 from well_log_classifier.models.lithology_classifier import LithologyClassifier
@@ -25,6 +26,8 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+Instrumentator().instrument(app).expose(app)
 
 MODELS_DIR = os.path.join(os.path.dirname(__file__), "outputs", "models")
 classifier = None
@@ -126,3 +129,4 @@ async def porosity(request: PorosityRequest):
         return PorosityResponse(porosity=round(prediction, 4))
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
