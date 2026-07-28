@@ -14,3 +14,6 @@ outputs/training_results.json
 .pytest_cache/
 .coverage
 htmlcov/
+
+# Streamlit Cloud model files
+!outputs/models/*.pkl
