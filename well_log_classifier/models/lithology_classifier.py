@@ -1,5 +1,3 @@
-"""TensorFlow/Keras deep learning model for lithology classification."""
-
 import numpy as np
 import pickle
 import os

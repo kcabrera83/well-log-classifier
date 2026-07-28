@@ -1,5 +1,3 @@
-"""Synthetic well log data generator for training and testing."""
-
 import numpy as np
 import pandas as pd
 

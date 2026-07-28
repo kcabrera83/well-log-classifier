@@ -1,5 +1,3 @@
-"""FastAPI for well log classification and porosity estimation using TensorFlow/Keras."""
-
 import os
 import numpy as np
 from typing import Dict
@@ -16,7 +14,7 @@ from well_log_classifier.data_generator import generate_well_log_data, LITHOLOGY
 app = FastAPI(
     title="Well Log Classifier",
     description="Lithology classification and porosity estimation from well log features (TensorFlow/Keras)",
-    version="2.0.0",
+    version="0.1",
 )
 
 app.add_middleware(

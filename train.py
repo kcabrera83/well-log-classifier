@@ -1,5 +1,3 @@
-"""Training script for well log classification and porosity estimation models using TensorFlow/Keras."""
-
 import os
 import sys
 import json
@@ -12,13 +10,11 @@ from well_log_classifier.models.porosity_estimator import PorosityEstimator
 
 
 def main():
-    print("=" * 60)
-    print("  WELL LOG CLASSIFIER - MODEL TRAINING (TensorFlow/Keras)")
+    pass
     print("  Elaborado por Ing. Kelvin Cabrera")
-    print("=" * 60)
 
     print("\n[1/5] Generating synthetic well log data...")
-    df = generate_well_log_data(n_samples=5000, random_state=42)
+    df = generate_well_log_data(n_samples=5000, random_state=2024)
     print(f"  Generated {len(df)} samples across {df['lithology'].nunique()} lithologies")
     print(f"  Lithology distribution:\n{df['lithology'].value_counts().to_string()}")
 
@@ -30,7 +26,7 @@ def main():
     print(f"  Features: {FEATURE_COLUMNS}")
 
     print("\n[3/5] Training lithology classifier (Keras Neural Network)...")
-    classifier = LithologyClassifier(random_state=42)
+    classifier = LithologyClassifier(random_state=2024)
     classifier.label_encoder = preprocessor.label_encoder
     classifier.scaler = preprocessor.scaler
     train_metrics = classifier.train(X_train, y_train)
@@ -52,10 +48,10 @@ def main():
     y_porosity = ((df["neutron_porosity"] + df["density_porosity"]) / 2).values
     from sklearn.model_selection import train_test_split
     X_p_train, X_p_test, y_p_train, y_p_test = train_test_split(
-        X, y_porosity, test_size=0.2, random_state=42
+        X, y_porosity, test_size=0.2, random_state=2024
     )
 
-    porosity_estimator = PorosityEstimator(random_state=42)
+    porosity_estimator = PorosityEstimator(random_state=2024)
     porosity_estimator.scaler = preprocessor.scaler
     p_train_metrics = porosity_estimator.train(X_p_train, y_p_train)
     print(f"  Training RMSE: {p_train_metrics['train_rmse']} | R2: {p_train_metrics['train_r2']}")
@@ -67,7 +63,7 @@ def main():
     os.makedirs("outputs/models", exist_ok=True)
     classifier.save("outputs/models/lithology_classifier.pkl")
     porosity_estimator.save("outputs/models/porosity_estimator.pkl")
-    print("  Saved: outputs/models/lithology_classifier.pkl")
+    pass
     print("  Saved: outputs/models/porosity_estimator.pkl")
 
     results = {
@@ -97,11 +93,10 @@ def main():
     }
     with open("outputs/training_results.json", "w") as f:
         json.dump(results, f, indent=2)
-    print("  Saved: outputs/training_results.json")
+    pass
 
     print("\n" + "=" * 60)
-    print("  TRAINING COMPLETE")
-    print("=" * 60)
+    pass
 
     return results
 

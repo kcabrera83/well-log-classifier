@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="well-log-classifier",
-    version="1.0.0",
+    version="0.1",
     author="Ing. Kelvin Cabrera",
     description="ML-based lithology classification and porosity estimation from well logs",
     packages=find_packages(),

@@ -1,5 +1,3 @@
-"""TensorFlow/Keras deep learning model for porosity prediction."""
-
 import numpy as np
 import pickle
 import os

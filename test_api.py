@@ -1,5 +1,3 @@
-"""API integration tests for the Well Log Classifier FastAPI app."""
-
 import sys
 from fastapi.testclient import TestClient
 
@@ -81,9 +79,7 @@ def test_porosity_invalid():
 
 
 def main():
-    print("=" * 50)
-    print("  API INTEGRATION TESTS")
-    print("=" * 50)
+    pass
 
     tests = [
         test_health, test_models_info, test_classify, test_classify_shale,
