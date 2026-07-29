@@ -12,12 +12,12 @@ d = Path(__file__).parent / 'outputs' / 'models'
 models = {'lithology': joblib.load(d / 'lithology_classifier.pkl'), 'porosity': joblib.load(d / 'porosity_estimator.pkl')}
 
 st.sidebar.header("Input Parameters")
-gamma_ray = st.sidebar.slider('gamma ray', 0, 200, 100)
-resistivity = st.sidebar.slider('resistivity', 0, 100, 50)
-neutron_porosity = st.sidebar.slider('neutron porosity', 0, 45, 22)
-density_porosity = st.sidebar.slider('density porosity', 0, 45, 22)
-sonic = st.sidebar.slider('sonic', 40, 140, 90)
-caliper = st.sidebar.slider('caliper', 6, 16, 11)
+gamma_ray = st.sidebar.slider('Gamma Ray', 0, 200, 100)
+resistivity = st.sidebar.slider('Resistivity', 0, 100, 50)
+neutron_porosity = st.sidebar.slider('Neutron Porosity', 0, 45, 22)
+density_porosity = st.sidebar.slider('Density Porosity', 0, 45, 22)
+sonic = st.sidebar.slider('Sonic', 40, 140, 90)
+caliper = st.sidebar.slider('Caliper', 6, 16, 11)
 
 if st.sidebar.button("Run"):
     try:
@@ -27,8 +27,9 @@ if st.sidebar.button("Run"):
             X = m['scaler'].transform(x)
             p = m['model'].predict(X)
             if 'label_encoder' in m:
-                cols[i].metric(k.title(), m['label_encoder'].inverse_transform(p)[0])
+                val = m['label_encoder'].inverse_transform(p)[0]
             else:
-                cols[i].metric(k.title(), f'{p[0]:.2f}')
+                val = f'{p[0]:.2f}'
+            cols[i].metric(k.title(), val)
     except Exception as e:
-        st.error(f'Error: {e}')
+        st.error(str(e))
