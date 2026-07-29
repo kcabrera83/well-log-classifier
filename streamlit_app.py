@@ -1,54 +1,34 @@
 import streamlit as st
-import joblib
-import numpy as np
 import sys
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent))
 
 st.set_page_config(page_title="Well Log Classifier", layout="wide")
 st.title("Well Log Classifier")
-st.markdown("Classify lithology and estimate porosity from well log data.")
+st.markdown("Classify lithology and estimate porosity from well logs.")
 
-@st.cache_resource
-def load_models():
-    d = Path(__file__).parent / "outputs" / "models"
-    return {k: joblib.load(d / v) for k, v in [("lithology", "lithology_classifier.pkl"), ("porosity", "porosity_estimator.pkl")]}
-
-models = load_models()
+import joblib, numpy as np
+d = Path(__file__).parent / 'outputs' / 'models'
+models = {'lithology': joblib.load(d / 'lithology_classifier.pkl'), 'porosity': joblib.load(d / 'porosity_estimator.pkl')}
 
 st.sidebar.header("Input Parameters")
-gamma_ray_api = st.sidebar.slider("Gamma Ray Api", 0, 200, 100)
-resistivity_ohm_m = st.sidebar.slider("Resistivity Ohm M", 0, 100, 50)
-neutron_porosity_pct = st.sidebar.slider("Neutron Porosity Pct", 0, 45, 22)
-density_porosity_pct = st.sidebar.slider("Density Porosity Pct", 0, 45, 22)
-sonic_us_ft = st.sidebar.slider("Sonic Us Ft", 40, 140, 90)
-caliper_in = st.sidebar.slider("Caliper In", 6, 16, 11)
+gamma_ray = st.sidebar.slider('gamma ray', 0, 200, 100)
+resistivity = st.sidebar.slider('resistivity', 0, 100, 50)
+neutron_porosity = st.sidebar.slider('neutron porosity', 0, 45, 22)
+density_porosity = st.sidebar.slider('density porosity', 0, 45, 22)
+sonic = st.sidebar.slider('sonic', 40, 140, 90)
+caliper = st.sidebar.slider('caliper', 6, 16, 11)
 
-if st.sidebar.button("Run Prediction"):
+if st.sidebar.button("Run"):
     try:
-        features = np.array([[gamma_ray_api, resistivity_ohm_m, neutron_porosity_pct, density_porosity_pct, sonic_us_ft, caliper_in]])
-        m = models["lithology"]
-        if isinstance(m, dict):
-            X = m.get("scaler").transform(features) if m.get("scaler") else features
-            pred = m["model"].predict(X)
-            if "label_encoder" in m:
-                result = m["label_encoder"].inverse_transform(pred)[0]
+        x = np.array([[gamma_ray, resistivity, neutron_porosity, density_porosity, sonic, caliper]])
+        cols = st.columns(2)
+        for i, (k, m) in enumerate(models.items()):
+            X = m['scaler'].transform(x)
+            p = m['model'].predict(X)
+            if 'label_encoder' in m:
+                cols[i].metric(k.title(), m['label_encoder'].inverse_transform(p)[0])
             else:
-                result = pred[0]
-        else:
-            result = m.predict(features)[0]
-        st.metric("Lithology", result if isinstance(result, str) else f"{result:.4f}")
-        m = models["porosity"]
-        if isinstance(m, dict):
-            X = m.get("scaler").transform(features) if m.get("scaler") else features
-            pred = m["model"].predict(X)
-            if "label_encoder" in m:
-                result = m["label_encoder"].inverse_transform(pred)[0]
-            else:
-                result = pred[0]
-        else:
-            result = m.predict(features)[0]
-        st.metric("Porosity", result if isinstance(result, str) else f"{result:.4f}")
+                cols[i].metric(k.title(), f'{p[0]:.2f}')
     except Exception as e:
-        st.error(f"Error: {e}")
-
+        st.error(f'Error: {e}')
