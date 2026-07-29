@@ -1,5 +1,6 @@
 import streamlit as st
 import pickle
+import joblib
 import numpy as np
 import sys
 from pathlib import Path
@@ -12,7 +13,7 @@ st.markdown("Classify lithology and estimate porosity from well log data.")
 @st.cache_resource
 def load_models():
     d = Path(__file__).parent / "outputs" / "models"
-    return {k: pickle.load(open(d / v, "rb")) for k, v in [("lithology", "lithology_classifier.pkl"), ("porosity", "porosity_estimator.pkl")]}
+    return {k: joblib.load(d / v) for k, v in [("lithology", "lithology_classifier.pkl"), ("porosity", "porosity_estimator.pkl")]}
 
 models = load_models()
 
